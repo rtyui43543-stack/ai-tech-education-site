@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>創意走廊 AI 科技教育 | AI無人機、AI機器人與生成式AI課程招生</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              techBlue: '#2F80FF',      // 電光科技藍 (主色 30%)
+              futurePurple: '#7B61FF',  // 未來感覺紫 (主色 30%)
+              iceBlue: '#DFF4FF',       // 冰霧淺藍 (輔助色)
+              lavender: '#CBB6FF',      // 柔光薰衣草 (輔助色)
+              techGray: '#F4F7FB',      // 極淺科技灰 (輔助色)
+              orange: '#FF8A3D',        // 行動亮橘 (強調色 10%)
+              cyan: '#55E6FF',          // 螢光青藍 (強調色 10%)
+              inkBlue: '#0F1B3D',       // 深夜墨藍 (強調色文字錨點)
+              spaceDark: '#04091A',     // 宇宙極深藍 (結合下載.jfif)
+              spaceVibrant: '#1E40AF'   // 宇宙活潑藍 (結合下載.jfif)
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'PingFang TC', 'Microsoft JhengHei', 'sans-serif'],
+          },
+          boxShadow: {
+            'premium': '0 10px 30px -5px rgba(47, 128, 255, 0.15)',
+            'orange-glow': '0 8px 25px rgba(255, 138, 61, 0.45)',
+            'blue-glow': '0 8px 25px rgba(47, 128, 255, 0.35)',
+            'card-hover': '0 20px 40px -10px rgba(15, 27, 61, 0.25)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons for UI -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* 璀璨星雲背景 (高度還原 下載.jfif 質感) */
+    .nebula-bg {
+      background:
+        linear-gradient(180deg, rgba(3, 8, 26, 0.92) 0%, rgba(7, 21, 61, 0.9) 30%, rgba(16, 43, 115, 0.88) 60%, rgba(26, 70, 189, 0.9) 100%),
+        url('ai-assets/hero-bg.png') center top / cover fixed;
+      background-attachment: fixed;
+    }
+    /* 璀璨星空背景網格，建立網頁層次與深度 */
+    .tech-grid-overlay {
+      background-size: 50px 50px;
+      background-image: linear-gradient(to right, rgba(85, 230, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(85, 230, 255, 0.05) 1px, transparent 1px);
+    }
+    @keyframes floating {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(0.5deg); }
+    }
+    @keyframes softPulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+    .animate-float {
+      animation: floating 6s ease-in-out infinite;
+    }
+    .animate-float-delay {
+      animation: floating 7s ease-in-out infinite;
+      animation-delay: 2.5s;
+    }
+    .animate-soft-pulse {
+      animation: softPulse 5s ease-in-out infinite;
+    }
+    /* 輕奢高對比毛玻璃卡片 - 大底(60%)為淺色或白，避免過重，與星空背景高強度對比 */
+    .glass-card-light {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    .glass-card-dark {
+      background: rgba(15, 27, 61, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(85, 230, 255, 0.2);
+    }
+    /* 滾動條美化 */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #03081A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #7B61FF;
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FF8A3D;
+    }
+  </style>
+</head>
+<body class="nebula-bg text-brand-inkBlue font-sans antialiased overflow-x-hidden relative min-h-screen pb-12">
+
+  <!-- ==================== BACKGROUND STARFIELD CANVAS ==================== -->
+  <!-- 仿照 下載.jfif 的粒子星河畫布，具備微閃爍與宇宙塵雲效果 -->
+  <canvas id="starfield" class="fixed inset-0 pointer-events-none z-0"></canvas>
+  
+  <!-- 星雲璀璨光學圖層 (色票系統：螢光青與未來紫的放射光斑) -->
+  <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-[5%] right-[10%] w-[500px] h-[500px] bg-brand-cyan/20 rounded-full blur-[120px] animate-soft-pulse"></div>
+    <div class="absolute top-[25%] left-[-5%] w-[600px] h-[600px] bg-brand-futurePurple/20 rounded-full blur-[140px] animate-soft-pulse" style="animation-delay: 2s;"></div>
+    <div class="absolute top-[50%] right-[-5%] w-[550px] h-[550px] bg-brand-techBlue/25 rounded-full blur-[120px] animate-soft-pulse"></div>
+    <div class="absolute top-[75%] left-[5%] w-[600px] h-[600px] bg-brand-futurePurple/15 rounded-full blur-[130px] animate-soft-pulse" style="animation-delay: 1.5s;"></div>
+  </div>
+
+  <div class="relative z-10 tech-grid-overlay">
+
+    <!-- ==================== HEADER & NAVIGATION ==================== -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-4 px-4 sm:px-6 lg:px-8 border-b border-transparent">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <!-- Brand Logo -->
+        <a href="#home" class="flex items-center space-x-3 group">
+          <div class="w-10 h-10 bg-gradient-to-br from-brand-techBlue to-brand-futurePurple rounded-xl flex items-center justify-center transform group-hover:scale-105 transition-transform shadow-blue-glow">
+            <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
+          </div>
+          <div>
+            <span class="text-xl font-black tracking-wider text-white block">創意走廊</span>
+            <span class="text-[10px] text-brand-cyan tracking-widest block font-bold uppercase font-mono">Creative Corridor AI</span>
+          </div>
+        </a>
+
+        <!-- Desktop Links -->
+        <nav class="hidden lg:flex items-center space-x-1 bg-brand-inkBlue/85 backdrop-blur-md px-5 py-2 rounded-full border border-white/10 shadow-premium">
+          <a href="#home" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">首頁</a>
+          <a href="#courses" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">課程介紹</a>
+          <a href="#why-learn-ai" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">科技素養</a>
+          <a href="#experience" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">體驗亮點</a>
+          <a href="#path" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">學習路徑</a>
+          <a href="#portfolio" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">學生作品</a>
+          <a href="#parents" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">家長專區</a>
+          <a href="#faculty" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">師資團隊</a>
+          <a href="#faq" class="px-3 py-1 text-xs font-bold text-slate-200 hover:text-brand-cyan transition-colors">常見問題</a>
+        </nav>
+
+        <!-- CTA Button in brand orange -->
+        <div class="hidden lg:flex items-center">
+          <a href="#register" class="px-6 py-2.5 bg-brand-orange hover:bg-brand-orange/90 text-white text-sm font-black rounded-full transition-all duration-300 transform hover:-translate-y-0.5 shadow-orange-glow flex items-center gap-2">
+            <span>預約免費體驗</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </a>
+        </div>
+
+        <!-- Mobile Hamburger Button -->
+        <button id="menu-btn" class="lg:hidden flex items-center justify-center p-2 rounded-lg text-white hover:bg-white/15 transition-colors focus:outline-none" aria-label="Toggle Menu">
+          <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Drawer Panel -->
+      <div id="mobile-menu" class="hidden fixed top-[73px] left-0 w-full h-[calc(100vh-73px)] bg-brand-spaceDark/95 backdrop-blur-lg z-40 transition-all duration-300 overflow-y-auto">
+        <div class="flex flex-col p-6 space-y-4">
+          <a href="#home" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>首頁</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#courses" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>課程介紹</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#why-learn-ai" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>科技素養</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#experience" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>體驗亮點</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#path" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>學習路徑</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#portfolio" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>學習成果</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#parents" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>家長專區</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#faculty" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>師資團隊</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#faq" class="mobile-link text-lg font-bold text-white py-2 border-b border-white/5 flex items-center justify-between"><span>常見問題</span><i class="fa-solid fa-chevron-right text-xs text-brand-cyan"></i></a>
+          <a href="#register" class="mobile-link w-full py-3.5 mt-4 bg-brand-orange text-white text-center font-black rounded-xl shadow-orange-glow flex items-center justify-center gap-2">
+            <span>預約免費體驗</span>
+            <i class="fa-solid fa-arrow-right text-sm"></i>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================== 1. HERO SECTION 主視覺區 ==================== -->
+    <section id="home" class="relative pt-32 pb-20 md:pt-40 md:pb-32 px-4 sm:px-6 lg:px-8 z-10 flex items-center min-h-[90vh]">
+      <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Left Content -->
+        <div class="lg:col-span-7 flex flex-col justify-center space-y-6 text-center lg:text-left">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-inkBlue/80 border border-brand-cyan/40 text-brand-cyan text-xs font-extrabold tracking-wider mx-auto lg:mx-0 w-fit backdrop-blur-md">
+            <span class="w-2 h-2 rounded-full bg-brand-cyan animate-ping"></span>
+            <span>精準對接：未來科技感 × 親子教育感 × 專業可信任</span>
+          </div>
+          
+          <!-- Main Headline -->
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">
+            讓孩子從玩中學 AI<br />
+            <span class="bg-gradient-to-r from-brand-cyan via-brand-techBlue to-brand-futurePurple bg-clip-text text-transparent">培養未來科技競爭力</span>
+          </h1>
+          
+          <!-- Subtitle Description -->
+          <p class="text-base sm:text-lg text-slate-200 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-semibold">
+            結合 <span class="text-brand-cyan font-extrabold">AI 無人機</span>、<span class="text-brand-futurePurple font-extrabold">AI 機器人</span> 與 <span class="text-brand-lavender font-extrabold">生成式 AI</span>，透過實作任務與作品創作，幫助孩子建立邏輯思考、科技素養與創新能力。
+          </p>
+          
+          <!-- Key Bullet Points -->
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2 max-w-lg mx-auto lg:mx-0 text-left text-sm text-slate-300 font-bold">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-square-check text-brand-cyan"></i>
+              <span>零程式基礎起步</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-square-check text-brand-cyan"></i>
+              <span>專業實作教材</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-square-check text-brand-cyan"></i>
+              <span>銜接全國大賽</span>
+            </div>
+          </div>
+
+          <!-- Call to Actions -->
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+            <a href="#register" class="w-full sm:w-auto px-8 py-4 bg-brand-orange hover:bg-brand-orange/90 text-white text-base font-black rounded-xl shadow-orange-glow transition-all duration-300 transform hover:-translate-y-1 text-center flex items-center justify-center gap-2">
+              <i class="fa-solid fa-calendar-check animate-bounce"></i>
+              <span>立即預約免費體驗</span>
+            </a>
+            <a href="#courses" class="w-full sm:w-auto px-8 py-4 bg-brand-inkBlue/85 hover:bg-brand-inkBlue text-white text-base font-black rounded-xl border-2 border-brand-techBlue shadow-premium transition-all duration-300 transform hover:-translate-y-1 text-center flex items-center justify-center gap-2">
+              <span>幫孩子報名課程</span>
+              <i class="fa-solid fa-user-plus"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column Visual Graphic Card -->
+        <div class="lg:col-span-5 relative w-full flex justify-center items-center">
+          <!-- Floating celestial shapes background -->
+          <div class="absolute -top-10 -left-10 w-40 h-40 bg-brand-techBlue/30 rounded-full blur-2xl animate-soft-pulse"></div>
+          <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-brand-futurePurple/30 rounded-full blur-2xl animate-soft-pulse" style="animation-delay: 2s;"></div>
+
+          <!-- Premium Technology Interface Panel (Aura Luminous Transparent Glassmorphism) -->
+          <div class="w-full max-w-[420px] glass-card-dark rounded-3xl p-6 relative overflow-hidden shadow-card-hover animate-float">
+            <!-- Top indicators -->
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-brand-cyan animate-ping"></span>
+                <span class="text-[10px] text-brand-cyan tracking-widest uppercase font-mono font-black">AI LAB SYSTEM</span>
+              </div>
+              <div class="text-[9px] text-brand-lavender font-mono font-bold">VER 3.0</div>
+            </div>
+
+            <div class="mt-5 rounded-2xl overflow-hidden border border-brand-cyan/20 shadow-blue-glow">
+              <img src="ai-assets/hero-main.png" alt="AI 科技教育首頁主視覺" class="w-full aspect-[16/9] object-cover" loading="eager" />
+            </div>
+
+            <!-- Featured display indicators -->
+            <div class="py-6 space-y-4">
+              <!-- Drone item -->
+              <div class="flex items-center justify-between p-3.5 bg-brand-inkBlue/80 rounded-2xl border border-brand-techBlue/30 hover:border-brand-techBlue transition-all shadow-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-brand-techBlue/20 flex items-center justify-center text-brand-cyan shadow-sm">
+                <img src="ai-assets/drone.svg" alt="" class="w-5 h-5" />
+                  </div>
+                  <div class="text-left">
+                    <h5 class="text-xs font-black text-white">AI 無人機 (Drone Control)</h5>
+                    <p class="text-[9px] text-slate-300">3D 空間飛行航線規劃學</p>
+                  </div>
+                </div>
+                <span class="text-[9px] text-brand-cyan font-mono font-bold">Active</span>
+              </div>
+
+              <!-- Robot item -->
+              <div class="flex items-center justify-between p-3.5 bg-brand-inkBlue/80 rounded-2xl border border-brand-futurePurple/30 hover:border-brand-futurePurple transition-all shadow-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-brand-futurePurple/20 flex items-center justify-center text-brand-lavender shadow-sm">
+                    <img src="ai-assets/robot.svg" alt="" class="w-5 h-5" />
+                  </div>
+                  <div class="text-left">
+                    <h5 class="text-xs font-black text-white">AI 機器人 (Robotics)</h5>
+                    <p class="text-[9px] text-slate-300">超音波避障多傳感自走硬體</p>
+                  </div>
+                </div>
+                <span class="text-[9px] text-brand-futurePurple font-mono font-bold">Connected</span>
+              </div>
+
+              <!-- Generative AI item -->
+              <div class="flex items-center justify-between p-3.5 bg-brand-inkBlue/80 rounded-2xl border border-brand-cyan/20 hover:border-brand-cyan transition-all shadow-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-brand-cyan/15 flex items-center justify-center text-brand-cyan shadow-sm">
+                    <img src="ai-assets/ai-brain.svg" alt="" class="w-5 h-5" />
+                  </div>
+                  <div class="text-left">
+                    <h5 class="text-xs font-black text-white">生成式 AI (Art Wizard)</h5>
+                    <p class="text-[9px] text-slate-300">圖文大語言提示詞創意引導</p>
+                  </div>
+                </div>
+                <span class="text-[9px] text-brand-orange font-mono font-bold">Ready</span>
+              </div>
+            </div>
+
+            <!-- Bottom micro-stats bar -->
+            <div class="pt-4 border-t border-white/10 flex justify-between items-center text-[10px] text-slate-300 font-mono font-bold">
+              <div>⚡ 啟迪未來無限可能</div>
+              <div>🏆 頂級 AI 教育認證</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. THREE COURSE HIGHLIGHTS 三大課程亮點區 ==================== -->
+    <section id="courses" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">COURSE MATRIX</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">三大核心學習領域，啟迪無限可能</h2>
+          <p class="text-slate-300 mt-4 font-semibold">我們將前沿 AI 技術轉化為有條理、易於理解的學習模組。幫助孩子快速完成從科技玩具到高階開發者的跨越。</p>
+        </div>
+
+        <!-- Highlights Cards Grid (使用高對比、剔透的 glass-card-light，保護字體可讀性) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Card 1: AI Drone -->
+          <div class="group glass-card-light hover:bg-white rounded-3xl p-8 transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between shadow-premium hover:shadow-card-hover">
+            <div>
+              <div class="mb-6 rounded-2xl overflow-hidden border border-brand-techBlue/20 shadow-sm">
+                <img src="ai-assets/drone-card.png" alt="AI 無人機課程與飛行任務教學" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              </div>
+              <!-- Icon with tech blue -->
+              <div class="w-16 h-16 rounded-2xl bg-brand-techBlue/10 border border-brand-techBlue/20 flex items-center justify-center text-brand-techBlue mb-6 group-hover:scale-110 group-hover:bg-brand-techBlue/20 transition-all duration-300 shadow-sm">
+                <img src="ai-assets/drone.svg" alt="" class="w-8 h-8" />
+              </div>
+              <!-- Title & Description -->
+              <h3 class="text-2xl font-black text-brand-inkBlue mb-3 flex items-center justify-between">
+                <span>AI 無人機課程</span>
+                <span class="text-[10px] bg-brand-techBlue/15 text-brand-techBlue px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">熱門</span>
+              </h3>
+              <p class="text-slate-600 text-sm leading-relaxed mb-6 font-semibold">
+                學習飛行邏輯、空間判斷、任務規劃與程式控制，讓孩子在實作中理解科技應用。
+              </p>
+              <!-- Key bullet list -->
+              <ul class="space-y-3 mb-8">
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-techBlue"></span>
+                  <span>飛行任務挑戰 (3D 航線規劃)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-techBlue"></span>
+                  <span>空間方向訓練 (提升三維邏輯)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-techBlue"></span>
+                  <span>程式邏輯建立 (Scratch/Python操控)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-techBlue"></span>
+                  <span>競賽任務導入 (銜接科技競賽)</span>
+                </li>
+              </ul>
+            </div>
+            <!-- Action Link Button -->
+            <a href="#register" class="w-full py-3 bg-brand-techGray border-2 border-brand-techBlue text-brand-techBlue text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:bg-brand-techBlue hover:text-white shadow-sm">
+              <span>了解課程大綱 & 報名</span>
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </a>
+          </div>
+
+          <!-- Card 2: AI Robot -->
+          <div class="group glass-card-light hover:bg-white rounded-3xl p-8 transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between shadow-premium hover:shadow-card-hover">
+            <div>
+              <div class="mb-6 rounded-2xl overflow-hidden border border-brand-futurePurple/20 shadow-sm bg-white">
+                <img src="ai-assets/robot-card.png" alt="AI 機器人課程與工程挑戰教學" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              </div>
+              <!-- Icon with lavender purple -->
+              <div class="w-16 h-16 rounded-2xl bg-brand-futurePurple/10 border border-brand-futurePurple/20 flex items-center justify-center text-brand-futurePurple mb-6 group-hover:scale-110 group-hover:bg-brand-futurePurple/20 transition-all duration-300 shadow-sm">
+                <img src="ai-assets/robot.svg" alt="" class="w-8 h-8" />
+              </div>
+              <!-- Title & Description -->
+              <h3 class="text-2xl font-black text-brand-inkBlue mb-3 flex items-center justify-between">
+                <span>AI 機器人課程</span>
+                <span class="text-[10px] bg-brand-futurePurple/15 text-brand-futurePurple px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">核心</span>
+              </h3>
+              <p class="text-slate-600 text-sm leading-relaxed mb-6 font-semibold">
+                透過機器人任務、感測器控制與避障挑戰，培養孩子的問題解決能力與邏輯思維。
+              </p>
+              <!-- Key bullet list -->
+              <ul class="space-y-3 mb-8">
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-futurePurple"></span>
+                  <span>機器人控制 (自走車多模態運動)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-futurePurple"></span>
+                  <span>避障挑戰 (精密感應迷宮破解)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-futurePurple"></span>
+                  <span>感測器應用 (紅外線與超音波原理)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-futurePurple"></span>
+                  <span>任務式學習 (專注克服難題結構)</span>
+                </li>
+              </ul>
+            </div>
+            <!-- Action Link Button -->
+            <a href="#register" class="w-full py-3 bg-brand-techGray border-2 border-brand-futurePurple text-brand-futurePurple text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:bg-brand-futurePurple hover:text-white shadow-sm">
+              <span>了解課程大綱 & 報名</span>
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </a>
+          </div>
+
+          <!-- Card 3: Generative AI -->
+          <div class="group glass-card-light hover:bg-white rounded-3xl p-8 transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between shadow-premium hover:shadow-card-hover">
+            <div>
+              <div class="mb-6 rounded-2xl overflow-hidden border border-brand-orange/20 shadow-sm">
+                <img src="ai-assets/pure-ai-card.png" alt="生成式 AI 與純 AI 課程教學" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              </div>
+              <!-- Icon with orange -->
+              <div class="w-16 h-16 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center text-brand-orange mb-6 group-hover:scale-110 group-hover:bg-brand-orange/20 transition-all duration-300 shadow-sm">
+                <img src="ai-assets/ai-brain.svg" alt="" class="w-8 h-8" />
+              </div>
+              <!-- Title & Description -->
+              <h3 class="text-2xl font-black text-brand-inkBlue mb-3 flex items-center justify-between">
+                <span>生成式 AI 課程</span>
+                <span class="text-[10px] bg-brand-orange/15 text-brand-orange px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">未來</span>
+              </h3>
+              <p class="text-slate-600 text-sm leading-relaxed mb-6 font-semibold">
+                學習 AI 圖文生成、提示詞設計與創意表達，讓孩子完成自己的第一個 AI 創作作品。
+              </p>
+              <!-- Key bullet list -->
+              <ul class="space-y-3 mb-8">
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+                  <span>AI 圖文生成 (多元風格美學體驗)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+                  <span>提示詞訓練 (精準語言表達訓練)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+                  <span>創意作品產出 (數位個人專案集)</span>
+                </li>
+                <li class="flex items-center gap-3 text-slate-700 text-sm font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+                  <span>數位表達能力 (展現個人科技創思)</span>
+                </li>
+              </ul>
+            </div>
+            <!-- Action Link Button -->
+            <a href="#register" class="w-full py-3 bg-brand-techGray border-2 border-brand-orange text-brand-orange text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:bg-brand-orange hover:text-white shadow-sm">
+              <span>了解課程大綱 & 報名</span>
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. WHY LEARN AI 為什麼孩子現在要學 AI ==================== -->
+    <section id="why-learn-ai" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">VISIONARY FUTURE</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">AI 不是未來才需要，而是孩子現在就該理解的能力</h2>
+          <p class="text-slate-300 mt-4 font-semibold">世界正以前所未有的速度自動化。提早起步不僅能獲得卓越的科技眼界，還能內化為不受淘汰的思考武器。</p>
+        </div>
+
+        <!-- Core Value Cards Grid (Modern White Glassmorphism - Super High Contrast) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Card 1 -->
+          <div class="glass-card-light p-6 rounded-2xl shadow-premium hover:shadow-card-hover hover:border-brand-techBlue/50 transition-all">
+            <div class="w-12 h-12 rounded-xl bg-brand-techBlue/10 flex items-center justify-center text-brand-techBlue shrink-0 shadow-sm">
+              <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <h4 class="text-lg font-black text-brand-inkBlue mb-1.5">科技素養普及</h4>
+              <p class="text-xs text-slate-600 leading-relaxed font-bold">AI 已經進入學習、生活與未來職涯。提早接觸，能使孩子免受陌生恐懼，將科技轉化為日常生活中的幫手。</p>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="glass-card-light p-6 rounded-2xl shadow-premium hover:shadow-card-hover hover:border-brand-futurePurple/50 transition-all">
+            <div class="w-12 h-12 rounded-xl bg-brand-futurePurple/10 flex items-center justify-center text-brand-futurePurple shrink-0 shadow-sm">
+              <i class="fa-solid fa-brain text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <h4 class="text-lg font-black text-brand-inkBlue mb-1.5">邏輯思考建立</h4>
+              <p class="text-xs text-slate-600 leading-relaxed font-bold">AI 課程的核心並非硬編碼程式，而是訓練演算法、步驟拆解、流程圖設計等系統性的極佳思考方式。</p>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="glass-card-light p-6 rounded-2xl shadow-premium hover:shadow-card-hover hover:border-brand-orange/50 transition-all">
+            <div class="w-12 h-12 rounded-xl bg-brand-orange/10 flex items-center justify-center text-brand-orange shrink-0 shadow-sm">
+              <i class="fa-solid fa-puzzle-piece text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <h4 class="text-lg font-black text-brand-inkBlue mb-1.5">問題解決能力</h4>
+              <p class="text-xs text-slate-600 leading-relaxed font-bold">透過無人機導航、機器人組裝調試與提示詞修正，孩子能在反覆挫折中學會探究問題、修正策略。</p>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="glass-card-light p-6 rounded-2xl shadow-premium hover:shadow-card-hover hover:border-brand-techBlue/50 transition-all">
+            <div class="w-12 h-12 rounded-xl bg-brand-techBlue/10 flex items-center justify-center text-brand-techBlue shrink-0 shadow-sm">
+              <i class="fa-solid fa-palette text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <h4 class="text-lg font-black text-brand-inkBlue mb-1.5">創意與專注力</h4>
+              <p class="text-xs text-slate-600 leading-relaxed font-bold">運用生成式 AI 創作與機械硬體控制，激發孩子內心原本模糊的科學幻想，在做中學的過程中獲得超強專注力。</p>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="glass-card-light p-6 rounded-2xl shadow-premium hover:shadow-card-hover hover:border-brand-futurePurple/50 transition-all">
+            <div class="w-12 h-12 rounded-xl bg-brand-futurePurple/10 flex items-center justify-center text-brand-futurePurple shrink-0 shadow-sm">
+              <i class="fa-solid fa-trophy text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <h4 class="text-lg font-black text-brand-inkBlue mb-1.5">豐富學習歷程</h4>
+              <p class="text-xs text-slate-600 leading-relaxed font-bold">課程能完全對接校園、國內科技運動大賽及學術競賽，在考學、升學中累積閃光的成果與團隊協作證書。</p>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="glass-card-light p-6 rounded-2xl shadow-premium hover:shadow-card-hover hover:border-brand-orange/50 transition-all">
+            <div class="w-12 h-12 rounded-xl bg-brand-orange/10 flex items-center justify-center text-brand-orange shrink-0 shadow-sm">
+              <i class="fa-solid fa-arrow-up-right-dots text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <h4 class="text-lg font-black text-brand-inkBlue mb-1.5">不可替代的競爭力</h4>
+              <p class="text-xs text-slate-600 leading-relaxed font-bold">掌握「如何對 AI 提問」、「如何控制智慧模組」，孩子不僅是工具使用者，更是擁有駕馭科技能力的創作者。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. COURSE EXPERIENCE HIGHLIGHTS 課程體驗亮點區 ==================== -->
+    <section id="experience" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">ACTIVE MISSIONS</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">孩子不是被動聽課，而是在任務中學會 AI</h2>
+          <p class="text-slate-300 mt-4 font-semibold">我們將 AI 無人機、AI 機器人與生成式 AI 設計成孩子看得懂、做得到、玩得起來的實作任務。</p>
+        </div>
+
+        <!-- Experience Tasks Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Card 1 -->
+          <div class="glass-card-light rounded-3xl p-6 relative overflow-hidden shadow-premium">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs text-brand-techBlue font-mono tracking-wider font-extrabold">MISSION_DRONE</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-brand-techBlue/10 text-brand-techBlue font-black shadow-sm">物理 + 程式</span>
+            </div>
+            <h3 class="text-xl font-black text-brand-inkBlue mb-3">1. 無人機任務挑戰</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-6 font-semibold">
+              孩子將透過飛行任務、路線规划與安全操作，理解空間判斷與程式控制的概念。
+            </p>
+            <div class="space-y-3 pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 A: 手動感應懸停控制</span>
+                <span class="text-brand-techBlue font-extrabold">✓ 基礎</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 B: 圖形化穿越九宮格迴圈</span>
+                <span class="text-brand-techBlue font-extrabold">✓ 進階</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 C: 模擬森林空搜自動路徑</span>
+                <span class="text-brand-techBlue font-extrabold">✓ 高階</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-6">
+              <span class="text-[10px] bg-brand-iceBlue text-brand-techBlue font-bold px-2.5 py-1 rounded-full border border-brand-techBlue/15 shadow-sm">飛行任務</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-techBlue font-bold px-2.5 py-1 rounded-full border border-brand-techBlue/15 shadow-sm">空間判斷</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-techBlue font-bold px-2.5 py-1 rounded-full border border-brand-techBlue/15 shadow-sm">程式邏輯</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-techBlue font-bold px-2.5 py-1 rounded-full border border-brand-techBlue/15 shadow-sm">安全操作</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="glass-card-light rounded-3xl p-6 relative overflow-hidden shadow-premium">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs text-brand-futurePurple font-mono tracking-wider font-extrabold">MISSION_ROBOT</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-brand-futurePurple/10 text-brand-futurePurple font-black shadow-sm">硬體 + 控制</span>
+            </div>
+            <h3 class="text-xl font-black text-brand-inkBlue mb-3">2. 機器人闖關任務</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-6 font-semibold">
+              透過機器人移動、避障與感測器應用，孩子能在挑戰中培養邏輯思考與問題解決能力。
+            </p>
+            <div class="space-y-3 pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 A: 超音波測距避障偵測</span>
+                <span class="text-brand-futurePurple font-extrabold">✓ 基礎</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 B: 紅外線黑色路線循跡</span>
+                <span class="text-brand-futurePurple font-extrabold">✓ 進階</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 C: 迷宮脫困最優解設計</span>
+                <span class="text-brand-futurePurple font-extrabold">✓ 高階</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-6">
+              <span class="text-[10px] bg-brand-iceBlue text-brand-futurePurple font-bold px-2.5 py-1 rounded-full border border-brand-futurePurple/15 shadow-sm">機器人控制</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-futurePurple font-bold px-2.5 py-1 rounded-full border border-brand-futurePurple/15 shadow-sm">避障挑戰</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-futurePurple font-bold px-2.5 py-1 rounded-full border border-brand-futurePurple/15 shadow-sm">感測器應用</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-futurePurple font-bold px-2.5 py-1 rounded-full border border-brand-futurePurple/15 shadow-sm">問題解決</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="glass-card-light rounded-3xl p-6 relative overflow-hidden shadow-premium">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs text-brand-orange font-mono tracking-wider font-extrabold">MISSION_GEN_AI</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-brand-orange/15 text-brand-orange font-black shadow-sm">大語言 + 創意</span>
+            </div>
+            <h3 class="text-xl font-black text-brand-inkBlue mb-3">3. 生成式 AI 創作任務</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-6 font-semibold">
+              孩子將學習提示詞設計、AI 圖文生成與創意表達，完成自己的第一個 AI 創作作品。
+            </p>
+            <div class="space-y-3 pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 A: 精準提示詞與問答設計</span>
+                <span class="text-brand-orange font-extrabold">✓ 基礎</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 B: Midjourney 風格插畫創作</span>
+                <span class="text-brand-orange font-extrabold">✓ 進階</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 font-bold">
+                <span>任務 C: 個人電子繪本完整發表</span>
+                <span class="text-brand-orange font-extrabold">✓ 高階</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-6">
+              <span class="text-[10px] bg-brand-iceBlue text-brand-orange font-bold px-2.5 py-1 rounded-full border border-brand-orange/15 shadow-sm">提示詞設計</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-orange font-bold px-2.5 py-1 rounded-full border border-brand-orange/15 shadow-sm">AI 圖文生成</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-orange font-bold px-2.5 py-1 rounded-full border border-brand-orange/15 shadow-sm">創意表達</span>
+              <span class="text-[10px] bg-brand-iceBlue text-brand-orange font-bold px-2.5 py-1 rounded-full border border-brand-orange/15 shadow-sm">作品產出</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. COURSE LEARNING PATH 課程學習路徑區 ==================== -->
+    <section id="path" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">LEARNING ROADMAP</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">從零基礎到完成 AI 科技作品</h2>
+          <p class="text-slate-300 mt-4 font-semibold">不拔苗助長，我們為不同年齡與程度的孩子設計了最溫和且具備成就感的四個學習階段。</p>
+        </div>
+
+        <!-- Time Line Stepper -->
+        <div class="relative flex flex-col items-center">
+          <!-- Center vertical line -->
+          <div class="absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-gradient-to-b from-brand-cyan via-brand-futurePurple to-brand-orange h-full hidden lg:block"></div>
+
+          <!-- Path Step 1 -->
+          <div class="relative w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-12 items-center">
+            <div class="lg:col-span-5 text-right hidden lg:block">
+              <span class="text-brand-cyan font-extrabold tracking-widest text-sm block">STAGE 01</span>
+              <h3 class="text-2xl font-black text-white mt-1">第一階段：科技啟蒙</h3>
+            </div>
+            <div class="lg:col-span-2 flex justify-center z-10">
+              <div class="w-12 h-12 rounded-full bg-brand-inkBlue border-4 border-brand-cyan flex items-center justify-center text-brand-cyan font-black text-lg shadow-blue-glow animate-soft-pulse">
+                1
+              </div>
+            </div>
+            <div class="lg:col-span-5 glass-card-light p-6 rounded-2xl relative shadow-premium">
+              <div class="absolute top-4 left-4 lg:hidden">
+                <span class="text-xs text-brand-techBlue font-extrabold block">第一階段</span>
+              </div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2 pt-4 lg:pt-0">科技啟蒙</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                認識 AI、無人機、機器人與基礎操作，建立安全觀念與學習興趣。引導孩子從好奇轉變為探索，在歡樂的實際接觸中消除對程式的刻板恐懼。
+              </p>
+            </div>
+          </div>
+
+          <!-- Path Step 2 -->
+          <div class="relative w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-12 items-center">
+            <div class="lg:col-span-5 glass-card-light p-6 rounded-2xl lg:text-right relative shadow-premium">
+              <div class="absolute top-4 lg:right-4 left-4 lg:left-auto">
+                <span class="text-xs text-brand-futurePurple font-extrabold block">第二階段</span>
+              </div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2 pt-4 lg:pt-0">程式邏輯</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                學習順序、迴圈、條件判斷與任務控制，建立基礎程式思維。運用圖形化程式積木，不需要打字就能像砌積木般精準規劃出硬體設備的一舉一動。
+              </p>
+            </div>
+            <div class="lg:col-span-2 flex justify-center z-10">
+              <div class="w-12 h-12 rounded-full bg-brand-inkBlue border-4 border-brand-futurePurple flex items-center justify-center text-brand-futurePurple font-black text-lg shadow-premium">
+                2
+              </div>
+            </div>
+            <div class="lg:col-span-5 text-left hidden lg:block">
+              <span class="text-brand-futurePurple font-extrabold tracking-widest text-sm block">STAGE 02</span>
+              <h3 class="text-2xl font-black text-white mt-1">第二階段：程式邏輯</h3>
+            </div>
+          </div>
+
+          <!-- Path Step 3 -->
+          <div class="relative w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-12 items-center">
+            <div class="lg:col-span-5 text-right hidden lg:block">
+              <span class="text-brand-orange font-extrabold tracking-widest text-sm block">STAGE 03</span>
+              <h3 class="text-2xl font-black text-white mt-1">第三階段：AI 應用</h3>
+            </div>
+            <div class="lg:col-span-2 flex justify-center z-10">
+              <div class="w-12 h-12 rounded-full bg-brand-inkBlue border-4 border-brand-orange flex items-center justify-center text-brand-orange font-black text-lg shadow-orange-glow">
+                3
+              </div>
+            </div>
+            <div class="lg:col-span-5 glass-card-light p-6 rounded-2xl shadow-premium relative">
+              <div class="absolute top-4 left-4 lg:hidden">
+                <span class="text-xs text-brand-orange font-extrabold block">第三階段</span>
+              </div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2 pt-4 lg:pt-0">AI 應用</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                導入感測器、影像辨識、AI 生成與自動化任務，理解科技如何解決現實問題。孩子將學會如何與最尖端的人工智慧模型協同創造，打造整合軟硬體的應用。
+              </p>
+            </div>
+          </div>
+
+          <!-- Path Step 4 -->
+          <div class="relative w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-4 items-center">
+            <div class="lg:col-span-5 glass-card-light p-6 rounded-2xl lg:text-right relative shadow-premium">
+              <div class="absolute top-4 lg:right-4 left-4 lg:left-auto">
+                <span class="text-xs text-emerald-500 font-extrabold block">第四階段</span>
+              </div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2 pt-4 lg:pt-0">作品與競賽</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                完成專題作品、任務挑戰與競賽訓練，累積學習成果與自信。提供最完善的發表會與科技競賽機會，讓孩子的卓越實力被看見、被記錄。
+              </p>
+            </div>
+            <div class="lg:col-span-2 flex justify-center z-10">
+              <div class="w-12 h-12 rounded-full bg-brand-inkBlue border-4 border-emerald-400 flex items-center justify-center text-emerald-400 font-black text-lg shadow-premium">
+                4
+              </div>
+            </div>
+            <div class="lg:col-span-5 text-left hidden lg:block">
+              <span class="text-emerald-500 font-extrabold tracking-widest text-sm block">STAGE 04</span>
+              <h3 class="text-2xl font-black text-white mt-1">第四階段：作品與競賽</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 6. LEARNING RESULTS EXHIBITION 學習成果展示區 ==================== -->
+    <section id="portfolio" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">STUDENT PORTFOLIO</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">孩子不是只上課，而是真的做出作品</h2>
+          <p class="text-slate-300 mt-4 font-semibold">我們相信「作品是最好的實力證明」。這裡展示了學員在不同課堂和任務中所創造的精彩成果。</p>
+        </div>
+
+        <!-- Portfolio Grid (White Glass Cards for absolute high contrast text readability) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Portfolio Card 1: AI Generated Art -->
+          <div class="group glass-card-light rounded-2xl overflow-hidden hover:border-brand-techBlue/50 transition-all duration-300 shadow-premium flex flex-col justify-between hover:shadow-card-hover">
+            <div>
+              <div class="aspect-video w-full border-b border-slate-200 relative overflow-hidden">
+                <img src="ai-assets/pure-ai-portfolio.png" alt="生成式 AI 創作成果示意" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-inkBlue/75 via-brand-inkBlue/20 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs text-white font-mono font-bold z-10 bg-brand-futurePurple/80 px-3 py-1 rounded-full">[ 創作者: 林*宇 (國一) ]</span>
+                <div class="absolute bottom-2 left-2 flex gap-1 z-10">
+                  <span class="text-[9px] bg-brand-inkBlue text-white font-bold px-2 py-0.5 rounded shadow-sm">#ChatGPT</span>
+                  <span class="text-[9px] bg-brand-inkBlue text-white font-bold px-2 py-0.5 rounded shadow-sm">#Midjourney</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h4 class="text-lg font-black text-brand-inkBlue mb-2">「未來科技城市：人類與機器人共生」</h4>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4 font-semibold">
+                  學員運用多種生成式 AI 工具與詳細提示詞技巧，完成極富幻想色彩的未來城市圖畫，並設計了配套故事劇本。
+                </p>
+              </div>
+            </div>
+            <div class="px-6 pb-6 pt-2 flex justify-between items-center border-t border-slate-200 text-[11px] font-bold text-slate-500">
+              <span>能力培養: 創意美感、邏輯表達</span>
+              <span class="text-brand-techBlue font-mono">100% 完成度</span>
+            </div>
+          </div>
+
+          <!-- Portfolio Card 2: Drone Flight Path Logs -->
+          <div class="group glass-card-light rounded-2xl overflow-hidden hover:border-brand-techBlue/50 transition-all duration-300 shadow-premium flex flex-col justify-between hover:shadow-card-hover">
+            <div>
+              <div class="aspect-video w-full border-b border-slate-200 relative overflow-hidden">
+                <img src="ai-assets/drone-portfolio.png" alt="無人機航線與任務規劃成果示意" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-inkBlue/70 via-brand-techBlue/10 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs text-white font-mono font-bold z-10 bg-brand-techBlue/80 px-3 py-1 rounded-full">[ 創作者: 張*恩 (小五) ]</span>
+                <div class="absolute bottom-2 left-2 flex gap-1 z-10">
+                  <span class="text-[9px] bg-brand-inkBlue text-white font-bold px-2 py-0.5 rounded shadow-sm">#Scratch</span>
+                  <span class="text-[9px] bg-brand-inkBlue text-white font-bold px-2 py-0.5 rounded shadow-sm">#自動導航</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h4 class="text-lg font-black text-brand-inkBlue mb-2">「無人機三維物資投遞自動飛行」</h4>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4 font-semibold">
+                  編程控制無人機起飛，安全越過高難度多重環形障礙，精準完成三維航線，最終精確降落在物資投遞標誌中心。
+                </p>
+              </div>
+            </div>
+            <div class="px-6 pb-6 pt-2 flex justify-between items-center border-t border-slate-200 text-[11px] font-bold text-slate-500">
+              <span>能力培養: 空間邏輯、程式編譯</span>
+              <span class="text-brand-techBlue font-mono">100% 完成度</span>
+            </div>
+          </div>
+
+          <!-- Portfolio Card 3: Robot Challenge -->
+          <div class="group glass-card-light rounded-2xl overflow-hidden hover:border-brand-techBlue/50 transition-all duration-300 shadow-premium flex flex-col justify-between hover:shadow-card-hover">
+            <div>
+              <div class="aspect-video w-full border-b border-slate-200 relative overflow-hidden bg-white">
+                <img src="ai-assets/robot-portfolio.png" alt="機器人任務挑戰成果示意" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-inkBlue/55 via-transparent to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs text-white font-mono font-bold z-10 bg-brand-futurePurple/80 px-3 py-1 rounded-full">[ 創作者: 陳*安 (小四) ]</span>
+                <div class="absolute bottom-2 left-2 flex gap-1 z-10">
+                  <span class="text-[9px] bg-brand-inkBlue text-white font-bold px-2 py-0.5 rounded shadow-sm">#超音波感應</span>
+                  <span class="text-[9px] bg-brand-inkBlue text-white font-bold px-2 py-0.5 rounded shadow-sm">#尋線避障</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h4 class="text-lg font-black text-brand-inkBlue mb-2">「自適應迷宮越障智慧自走車」</h4>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4 font-semibold">
+                  學員獨立調試傳感器探測範圍，優化防卡牆逃逸演算法，使自走車能在沒有遙控的條件下，自主避障脫困。
+                </p>
+              </div>
+            </div>
+            <div class="px-6 pb-6 pt-2 flex justify-between items-center border-t border-slate-200 text-[11px] font-bold text-slate-500">
+              <span>能力培養: 故障調試、物理電路</span>
+              <span class="text-brand-futurePurple font-mono">100% 完成度</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 7. PARENTS ZONE 家長專區 ==================== -->
+    <section id="parents" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">TRUST & GUARANTEE</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">家長最在意的，我們都幫您想好了</h2>
+          <p class="text-slate-300 mt-4 font-semibold">我們深知家長在為孩子挑選科技培訓課程時的諸多考量，因此我們在設計上實現了多層次的貼心規劃。</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+          <div class="rounded-3xl overflow-hidden border border-white/15 shadow-card-hover">
+            <img src="ai-assets/kids-class.png" alt="兒童 AI 課程與營隊互動學習" class="w-full aspect-[4/3] object-cover" loading="lazy" />
+          </div>
+          <div class="rounded-3xl overflow-hidden border border-white/15 shadow-card-hover">
+            <img src="ai-assets/trust-class.png" alt="課程流程與安全教學示意" class="w-full aspect-[4/3] object-cover" loading="lazy" />
+          </div>
+          <div class="rounded-3xl overflow-hidden border border-white/15 shadow-card-hover">
+            <img src="ai-assets/trust-parent.png" alt="家長溝通與學習成果展示" class="w-full aspect-[4/3] object-cover" loading="lazy" />
+          </div>
+        </div>
+
+        <!-- Feature Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Parent Card 1 -->
+          <div class="glass-card-light p-8 rounded-3xl hover:border-brand-techBlue/50 transition-all flex gap-6 shadow-premium hover:shadow-card-hover">
+            <div class="w-14 h-14 rounded-2xl bg-brand-techBlue/10 flex items-center justify-center text-brand-techBlue shrink-0 shadow-sm">
+              <i class="fa-solid fa-face-smile text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2">1. 沒有基礎也能學</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                課程採分級設計，從圖形化操作、任務闖關與實作體驗開始，適合零基礎孩子。專業老師會手把手耐心帶領，確保每個孩子都能順利跟上進度並建立興趣。
+              </p>
+            </div>
+          </div>
+
+          <!-- Parent Card 2 -->
+          <div class="glass-card-light p-8 rounded-3xl hover:border-brand-futurePurple/50 transition-all flex gap-6 shadow-premium hover:shadow-card-hover">
+            <div class="w-14 h-14 rounded-2xl bg-brand-futurePurple/10 flex items-center justify-center text-brand-futurePurple shrink-0 shadow-sm">
+              <i class="fa-solid fa-diagram-project text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2">2. 不只是玩，而是有系統地學</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                我們極力避免盲目的遊戲化。每堂課都結合明確的物理概念與程式邏輯，搭配豐富的操作練習。確保孩子在愉快玩耍的同時，帶走扎實的程式思維知識。
+              </p>
+            </div>
+          </div>
+
+          <!-- Parent Card 3 -->
+          <div class="glass-card-light p-8 rounded-3xl hover:border-brand-lavender/60 transition-all flex gap-6 shadow-premium hover:shadow-card-hover">
+            <div class="w-14 h-14 rounded-2xl bg-brand-lavender/30 flex items-center justify-center text-brand-futurePurple shrink-0 shadow-sm">
+              <i class="fa-solid fa-eye text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2">3. 看得見的學習成果</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                拒絕聽過就忘！孩子在每學期結束後都將親自完成一套 AI 創作繪本、無人機精準軌道任務或實體機器人，形成具象的學習履歷，讓家長隨時能為之驕傲。
+              </p>
+            </div>
+          </div>
+
+          <!-- Parent Card 4 -->
+          <div class="glass-card-light p-8 rounded-3xl hover:border-brand-orange/50 transition-all flex gap-6 shadow-premium hover:shadow-card-hover">
+            <div class="w-14 h-14 rounded-2xl bg-brand-orange/10 flex items-center justify-center text-brand-orange shrink-0 shadow-sm">
+              <i class="fa-solid fa-medal text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-brand-inkBlue mb-2">4. 可銜接競賽與學習歷程</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-semibold">
+                這不止是興趣，更能實踐未來規劃。我們的課程體系緊密對接多項知名科技大賽、科學展覽。能為孩子累積亮眼的作品集、結業證書，極大提升未來競爭力。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 8. FACULTY TEAM 師資團隊區 ==================== -->
+    <section id="faculty" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">WORLD CLASS MENTORS</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">由專業 AI 科技教育團隊帶領孩子學習</h2>
+          <p class="text-slate-300 mt-4 font-semibold">我們擁有長期深耕 AI 教育、高規格競賽輔導的團隊，重視安全防範、熱情引導與孩子自尊自立。</p>
+        </div>
+
+        <!-- Instructor Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Faculty Card 1 -->
+          <div class="glass-card-light rounded-2xl overflow-hidden hover:border-brand-techBlue/50 transition-all duration-300 flex flex-col items-center p-6 text-center shadow-premium">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-techBlue to-brand-futurePurple p-1 mb-4 shadow-sm">
+              <div class="w-full h-full rounded-full bg-white flex items-center justify-center border border-brand-techBlue/15">
+                <i class="fa-solid fa-user-tie text-brand-techBlue text-4xl"></i>
+              </div>
+            </div>
+            <h4 class="text-lg font-black text-brand-inkBlue">陳博士 (Dr. Chen)</h4>
+            <span class="text-xs text-brand-techBlue font-bold tracking-wider mt-1 mb-3 uppercase font-mono">AI 課程總監</span>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4 font-semibold">
+              台灣大學資訊工程博士、10年高校人工智慧教授經驗。熱愛將高深演算法化繁為簡，轉化為少兒理解的科學探索。
+            </p>
+            <div class="flex flex-wrap gap-1 justify-center mt-auto">
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-techBlue/10 shadow-sm">#AI教育規劃</span>
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-techBlue/10 shadow-sm">#課程架構</span>
+            </div>
+          </div>
+
+          <!-- Faculty Card 2 -->
+          <div class="glass-card-light rounded-2xl overflow-hidden hover:border-brand-futurePurple/50 transition-all duration-300 flex flex-col items-center p-6 text-center shadow-premium">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-futurePurple to-brand-lavender p-1 mb-4 shadow-sm">
+              <div class="w-full h-full rounded-full bg-white flex items-center justify-center border border-brand-futurePurple/15">
+                <i class="fa-solid fa-plane text-brand-futurePurple text-4xl"></i>
+              </div>
+            </div>
+            <h4 class="text-lg font-black text-brand-inkBlue">林教練 (Coach Lin)</h4>
+            <span class="text-xs text-brand-futurePurple font-bold tracking-wider mt-1 mb-3 uppercase font-mono">無人機教學講師</span>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4 font-semibold">
+              民航局持證專業無人機飛行教官、曾指導中學生代表隊在全省無人機編程穿越挑戰大賽中榮獲冠軍。
+            </p>
+            <div class="flex flex-wrap gap-1 justify-center mt-auto">
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-futurePurple/10 shadow-sm">#安全操作</span>
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-futurePurple/10 shadow-sm">#競賽訓練</span>
+            </div>
+          </div>
+
+          <!-- Faculty Card 3 -->
+          <div class="glass-card-light rounded-2xl overflow-hidden hover:border-brand-orange/50 transition-all duration-300 flex flex-col items-center p-6 text-center shadow-premium">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-orange to-red-400 p-1 mb-4 shadow-sm">
+              <div class="w-full h-full rounded-full bg-white flex items-center justify-center border border-brand-orange/15">
+                <i class="fa-solid fa-robot text-brand-orange text-4xl"></i>
+              </div>
+            </div>
+            <h4 class="text-lg font-black text-brand-inkBlue">黃老師 (Teacher Huang)</h4>
+            <span class="text-xs text-brand-orange font-bold tracking-wider mt-1 mb-3 uppercase font-mono">機器人程式講師</span>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4 font-semibold">
+              知名硬體實驗室開源專案維護者，5年機器人硬體與 Arduino 編程一線教學經歷。特別受孩子喜愛。
+            </p>
+            <div class="flex flex-wrap gap-1 justify-center mt-auto">
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-orange/10 shadow-sm">#避障感測</span>
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-orange/10 shadow-sm">#任務式程式</span>
+            </div>
+          </div>
+
+          <!-- Faculty Card 4 -->
+          <div class="glass-card-light rounded-2xl overflow-hidden hover:border-brand-techBlue/50 transition-all duration-300 flex flex-col items-center p-6 text-center shadow-premium">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-techBlue to-brand-lavender p-1 mb-4 shadow-sm">
+              <div class="w-full h-full rounded-full bg-white flex items-center justify-center border border-brand-techBlue/15">
+                <i class="fa-solid fa-wand-magic-sparkles text-brand-techBlue text-4xl"></i>
+              </div>
+            </div>
+            <h4 class="text-lg font-black text-brand-inkBlue">謝老師 (Teacher Hsieh)</h4>
+            <span class="text-xs text-brand-techBlue font-bold tracking-wider mt-1 mb-3 uppercase font-mono">生成式 AI 創作講師</span>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4 font-semibold">
+              曾任跨國廣告創意設計總監。精通 Midjourney、Stable Diffusion 等圖像生成工具，重視孩子的美學表達。
+            </p>
+            <div class="flex flex-wrap gap-1 justify-center mt-auto">
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-techBlue/10 shadow-sm">#提示詞美學</span>
+              <span class="text-[9px] bg-brand-iceBlue text-slate-600 font-bold px-2 py-0.5 rounded border border-brand-techBlue/10 shadow-sm">#創意指導</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 9. PARENTS TESTIMONIALS 家長見證區 ==================== -->
+    <section class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-orange text-sm font-black tracking-widest uppercase mb-2">HEARTWARMING FEEDBACK</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">家長與孩子的真實回饋</h2>
+          <p class="text-slate-300 mt-4 font-semibold">看看已經參與我們課程的家長與學生的切身感受，正是他們的信任，推動我們不斷精進。</p>
+        </div>
+
+        <!-- Testimonials Card Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="glass-card-light p-8 rounded-2xl hover:border-brand-techBlue/30 transition-all flex flex-col justify-between shadow-premium hover:shadow-card-hover">
+            <div>
+              <div class="flex items-center gap-1 mb-4 text-yellow-500">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-sm text-slate-600 leading-relaxed italic mb-6 font-semibold">
+                「孩子原本對程式一點興趣都沒有，甚至覺得那是枯燥的英文字。沒想到透過無人機任務，他開始在紙上畫航線圖，甚至主動思考怎麼寫迴圈來飛出一個完美的圓。這種主動性真的讓我喜出望外！」
+              </p>
+            </div>
+            <div class="flex items-center gap-3 pt-4 border-t border-slate-200">
+              <div class="w-10 h-10 rounded-full bg-brand-iceBlue border border-brand-techBlue/10 flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-user text-slate-500"></i>
+              </div>
+              <div>
+                <span class="text-xs text-brand-techBlue font-bold block">國小四年級 吳媽媽</span>
+                <span class="text-[10px] text-slate-400 block">無人機班學員家長</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="glass-card-light p-8 rounded-2xl hover:border-brand-futurePurple/30 transition-all flex flex-col justify-between shadow-premium hover:shadow-card-hover">
+            <div>
+              <div class="flex items-center gap-1 mb-4 text-yellow-500">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-sm text-slate-600 leading-relaxed italic mb-6 font-semibold">
+                「課程絕不只是買個昂貴的玩具回家。教練在課堂中極致細節地引導孩子一步步理解邏輯與超音波障礙原理。每次成功完成迷宮，孩子眼中的那種自豪感，是平常電子遊戲無法帶來的真材實感。」
+              </p>
+            </div>
+            <div class="flex items-center gap-3 pt-4 border-t border-slate-200">
+              <div class="w-10 h-10 rounded-full bg-brand-iceBlue border border-brand-futurePurple/10 flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-user text-slate-500"></i>
+              </div>
+              <div>
+                <span class="text-xs text-brand-futurePurple font-bold block">國小五年級 林爸爸</span>
+                <span class="text-[10px] text-slate-400 block">機器人避障班學員家長</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="glass-card-light p-8 rounded-2xl hover:border-brand-orange/30 transition-all flex flex-col justify-between shadow-premium hover:shadow-card-hover">
+            <div>
+              <div class="flex items-center gap-1 mb-4 text-yellow-500">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-sm text-slate-600 leading-relaxed italic mb-6 font-semibold">
+                「生成式 AI 課程讓我的孩子大開眼界！本來擔心這年紀接觸 AI 是不是太早，但老師注重啟迪提問思維（Prompt Engineering），不僅幫助孩子將腦中天馬行空的想法變成實體科幻插畫，更讓他變得樂於寫作與表達！」
+              </p>
+            </div>
+            <div class="flex items-center gap-3 pt-4 border-t border-slate-200">
+              <div class="w-10 h-10 rounded-full bg-brand-iceBlue border border-brand-orange/10 flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-user text-slate-500"></i>
+              </div>
+              <div>
+                <span class="text-xs text-brand-orange font-bold block">國中一年級 謝媽媽</span>
+                <span class="text-[10px] text-slate-400 block">生成式 AI 美學班學員家長</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 10. COMMON QUESTIONS FAQ 區 ==================== -->
+    <section id="faq" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-4xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-brand-cyan text-sm font-black tracking-widest uppercase mb-2">FAQ</div>
+          <h2 class="text-3xl md:text-4xl font-black text-white">常見問題 FAQ</h2>
+          <p class="text-slate-300 mt-4 font-semibold">我們整理了家長最常諮詢的十個問題，希望能協助您更加清晰地了解課程的方方面面。</p>
+        </div>
+
+        <!-- FAQ Accordions Group -->
+        <div class="space-y-4">
+          <!-- FAQ 1 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q1. 孩子沒有程式基礎可以上嗎？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                當然可以！我們絕大多數的學員在加入之前都沒有任何程式經驗。我們的課程採用圖像式（Drag-and-Drop）程式邏輯、拼圖般的操作系統。老師會手把手從零起步，引導孩子以「解決任務」的形式逐步深入，非常溫和。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q2. 課程適合幾年級的孩子學習？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                我們所有的課程專為「國小三年級」至「國中三年級」的孩子量身打造。我們在教材上特別注重圖畫理解、具體物理體驗，並且根據不同年齡段，採用不同的班級難度劃分。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q3. 家長需要自備無人機或機器人硬體嗎？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                不需要！在實體課堂與體驗課中，我們將全套提供專業的編程無人機、自適應智慧自走車等高質感教具，保障每位孩子都有一套專屬硬體進行實作調試。部分高階班家長可選擇自備以便課後精進。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q4. 無人機操作會不會有安全上的問題？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                安全是我們科技教育的首要底線！我們所有的無人機皆具備防護防撞保護罩（360度封閉式防護籠），並嚴格控制飛行高度與飛行空域。課堂全程由多位講師、助教共同引導，實施 1:6 以內的安全督導比率。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q5. 生成式 AI 課堂會不會太難或教壞孩子？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                不會的。我們不涉及生硬的大模型背後神經網絡公式。我們主要引導孩子理解「如何精準使用中文與英文向 AI 發問（也就是提示詞設計 Prompt Engineering）」，並且在安全和健康的限制框架內進行科學插畫、繪本和短劇編寫，培養的是創造性。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 6 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q6. 孩子學完一輪能收穫或做出什麼作品？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                孩子將能獲得：獨立進行程式自動飛行調試的能力、自製自適應避障自走車成品、精緻的個人 AI 生成電子故事圖畫繪本，並可獲得由創意走廊 AI 科技教育頒發的結業課程認證證書（支持列印並納入學習歷程檔案）。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 7 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q7. 是否有提供免費體驗課？預約流程如何？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                是的！我們每個月都會開放限量的預約免費科技體驗課。您可以直接填寫下方的報名表單，我們的專業課程規劃老師將會在24小時內致電或透過 LINE 與您取得聯繫，為您的孩子妥善安排最適合的體驗時間。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 8 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q8. 學完本課程後，可以去參加哪些科技競賽？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                我們的學員可以直接參加校園無人機編程穿越賽、青少年智慧控制挑戰賽、生成式 AI 跨界創意大賽等多元的全國性及國際賽事。我們將會提供專屬的「備賽小班培訓計畫」來鼎力協助學員。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 9 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q9. 課程費用大約是如何計算與收費？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                依據課程類別、階段高低與課時，我們提供極富性價比的階梯式學費定製。體驗課是完全免費的！如果您正式加入，我們也有多種彈性的期繳、期班優惠方案，課程顧問在與您溝通時會詳盡解答。
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 10 -->
+          <div class="faq-item glass-card-light hover:border-brand-techBlue/30 rounded-2xl overflow-hidden transition-all shadow-premium">
+            <button class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+              <span class="font-bold text-brand-inkBlue text-base">Q10. 如何報名體驗課或進一步諮詢？</span>
+              <span class="faq-icon text-brand-techBlue"><i class="fa-solid fa-plus transition-transform duration-300"></i></span>
+            </button>
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <div class="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 font-semibold">
+                非常簡單！直接在下方「報名表單區」留下您的名字、聯絡方式與孩子目前年級，點擊「送出諮詢」按鈕。或在右下角直接點擊「LINE 諮詢」與我們即時溝通。我們誠摯邀請您帶孩子親自感受 AI 的奇妙世界！
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 11. REGISTRATION FORM 報名表單區 ==================== -->
+    <section id="register" class="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 z-10">
+      <div class="max-w-3xl mx-auto">
+        <div class="glass-card-light rounded-3xl p-8 md:p-12 shadow-card-hover relative">
+          <div class="absolute -top-4 right-10 bg-brand-orange text-white text-xs font-black tracking-widest px-4 py-1.5 rounded-full shadow-orange-glow animate-bounce">
+            限量名額 · 本月免費
+          </div>
+
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-black text-brand-inkBlue">幫孩子預約一堂 AI 科技體驗課</h2>
+            <p class="text-slate-500 text-sm mt-3 font-semibold">留下資料後，我們將協助您安排最適合孩子的課程與時段。</p>
+          </div>
+
+          <!-- Form Elements -->
+          <form id="admission-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Parent Name -->
+              <div class="flex flex-col space-y-2">
+                <label for="parentName" class="text-xs font-bold text-brand-inkBlue tracking-wider">家長姓名 <span class="text-brand-orange">*</span></label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-solid fa-user"></i></span>
+                  <input type="text" id="parentName" required placeholder="請輸入家長姓名" class="w-full bg-white text-brand-inkBlue placeholder-slate-400 text-sm py-3.5 pl-11 pr-4 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-techBlue transition-all font-semibold" />
+                </div>
+              </div>
+
+              <!-- Contact Phone -->
+              <div class="flex flex-col space-y-2">
+                <label for="phone" class="text-xs font-bold text-brand-inkBlue tracking-wider">聯絡電話 <span class="text-brand-orange">*</span></label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-solid fa-phone"></i></span>
+                  <input type="tel" id="phone" required placeholder="請輸入手機電話" class="w-full bg-white text-brand-inkBlue placeholder-slate-400 text-sm py-3.5 pl-11 pr-4 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-techBlue transition-all font-semibold" />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- LINE ID -->
+              <div class="flex flex-col space-y-2">
+                <label for="lineId" class="text-xs font-bold text-brand-inkBlue tracking-wider">LINE ID</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-brands fa-line text-lg"></i></span>
+                  <input type="text" id="lineId" placeholder="方便我們即時與您聯絡" class="w-full bg-white text-brand-inkBlue placeholder-slate-400 text-sm py-3.5 pl-11 pr-4 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-techBlue transition-all font-semibold" />
+                </div>
+              </div>
+
+              <!-- Child Grade -->
+              <div class="flex flex-col space-y-2">
+                <label for="grade" class="text-xs font-bold text-brand-inkBlue tracking-wider">孩子年級 <span class="text-brand-orange">*</span></label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-solid fa-graduation-cap"></i></span>
+                  <select id="grade" required class="w-full bg-white text-brand-inkBlue placeholder-slate-400 text-sm py-3.5 pl-11 pr-4 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-techBlue transition-all appearance-none cursor-pointer font-semibold">
+                    <option value="" disabled selected>請選擇孩子目前年級</option>
+                    <option value="小學三年級">國小三年級</option>
+                    <option value="小學四年級">國小四年級</option>
+                    <option value="小學五年級">國小五年級</option>
+                    <option value="小學六年級">國小六年級</option>
+                    <option value="國中一年級">國中一年級</option>
+                    <option value="國中二年級">國中二年級</option>
+                    <option value="國中三年級">國中三年級</option>
+                  </select>
+                  <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Target Course Interested Checkboxes -->
+            <div class="flex flex-col space-y-3">
+              <span class="text-xs font-bold text-brand-inkBlue tracking-wider">有興趣的課程 (可多選) <span class="text-brand-orange">*</span></span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <label class="flex items-center gap-2 p-3 bg-white border border-slate-200 hover:border-brand-techBlue rounded-xl cursor-pointer select-none transition-colors shadow-sm">
+                  <input type="checkbox" name="interest" value="AI無人機" class="w-4 h-4 accent-brand-techBlue rounded cursor-pointer" />
+                  <span class="text-xs text-slate-700 font-bold">AI 無人機</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-slate-200 hover:border-brand-futurePurple rounded-xl cursor-pointer select-none transition-colors shadow-sm">
+                  <input type="checkbox" name="interest" value="AI機器人" class="w-4 h-4 accent-brand-futurePurple rounded cursor-pointer" />
+                  <span class="text-xs text-slate-700 font-bold">AI 機器人</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-slate-200 hover:border-brand-orange rounded-xl cursor-pointer select-none transition-colors shadow-sm">
+                  <input type="checkbox" name="interest" value="生成式AI" class="w-4 h-4 accent-brand-orange rounded cursor-pointer" />
+                  <span class="text-xs text-slate-700 font-bold">生成式 AI</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-slate-200 hover:border-emerald-500 rounded-xl cursor-pointer select-none transition-colors shadow-sm">
+                  <input type="checkbox" name="interest" value="還不確定，先諮詢" class="w-4 h-4 accent-brand-green rounded cursor-pointer" />
+                  <span class="text-xs text-slate-700 font-bold">先進行諮詢</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Learning Center Region -->
+              <div class="flex flex-col space-y-2">
+                <label for="location" class="text-xs font-bold text-brand-inkBlue tracking-wider">希望上課地區 <span class="text-brand-orange">*</span></label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-solid fa-map-location-dot"></i></span>
+                  <select id="location" required class="w-full bg-white text-brand-inkBlue placeholder-slate-400 text-sm py-3.5 pl-11 pr-4 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-techBlue transition-all appearance-none cursor-pointer font-semibold">
+                    <option value="" disabled selected>請選擇希望上課中心</option>
+                    <option value="台北信義旗艦中心">台北信義旗艦中心</option>
+                    <option value="新北板橋高鐵校區">新北板橋高鐵校區</option>
+                    <option value="台中西屯高科中心">台中西屯高科中心</option>
+                    <option value="高雄鼓山智慧園區">高雄鼓山智慧園區</option>
+                  </select>
+                  <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                </div>
+              </div>
+
+              <!-- Time Preference -->
+              <div class="flex flex-col space-y-2">
+                <label for="timePreference" class="text-xs font-bold text-brand-inkBlue tracking-wider">希望時段 <span class="text-brand-orange">*</span></label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"><i class="fa-solid fa-calendar-day"></i></span>
+                  <select id="timePreference" required class="w-full bg-white text-brand-inkBlue placeholder-slate-400 text-sm py-3.5 pl-11 pr-4 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-techBlue transition-all appearance-none cursor-pointer font-semibold">
+                    <option value="" disabled selected>請選擇希望時段</option>
+                    <option value="平日下課時段 (18:30-20:30)">平日下課時段 (18:30-20:30)</option>
+                    <option value="週六早上黃金時段 (09:30-11:30)">週六早上黃金時段 (09:30-11:30)</option>
+                    <option value="週六下午熱門時段 (14:00-16:00)">週六下午熱門時段 (14:00-16:00)</option>
+                    <option value="週日早上活力時段 (09:30-11:30)">週日早上活力時段 (09:30-11:30)</option>
+                    <option value="週日下午創作時段 (14:00-16:00)">週日下午創作時段 (14:00-16:00)</option>
+                  </select>
+                  <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"><i class="fa-solid fa-chevron-down text-xs"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Text Area Note -->
+            <div class="flex flex-col space-y-2">
+              <label for="notes" class="text-xs font-bold text-brand-inkBlue tracking-wider">備註欄</label>
+              <div class="relative">
+                <textarea id="notes" rows="3" placeholder="例如：孩子對哪方面比較特別有天分，或是有需要特別輔助的地方？" class="w-full bg-white text-brand-inkBlue placeholder-slate-400 text-sm py-3 px-4 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-techBlue transition-all resize-none font-semibold shadow-sm"></textarea>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-4 mt-4 bg-brand-orange hover:bg-brand-orange/90 text-white text-base font-black rounded-xl shadow-orange-glow transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>送出諮詢，幫孩子保留名額</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 12. FIXED FLOATING BUTTONS 固定浮動按鈕 ==================== -->
+    <!-- Desktop Fixed Floating CTAs (Bottom Right) -->
+    <div class="hidden md:flex flex-col gap-3 fixed bottom-8 right-8 z-40">
+      <!-- Line CTA -->
+      <a href="https://lin.ee/vAd9MGi" target="_blank" rel="noopener noreferrer" class="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:scale-105 group relative" aria-label="LINE Consultation">
+        <i class="fa-brands fa-line text-3xl"></i>
+        <span class="absolute right-16 scale-0 group-hover:scale-100 bg-emerald-500 text-white font-bold text-xs py-2 px-3 rounded-lg shadow-md whitespace-nowrap transition-all origin-right">
+          LINE 即時諮詢
+        </span>
+      </a>
+      <!-- Free Trial booking CTA -->
+      <a href="#register" class="w-14 h-14 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-full shadow-lg flex items-center justify-center text-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-orange-glow hover:scale-105 group relative" aria-label="Book Trial">
+        <i class="fa-solid fa-calendar-check text-xl"></i>
+        <span class="absolute right-16 scale-0 group-hover:scale-100 bg-brand-orange text-white font-bold text-xs py-2 px-3 rounded-lg shadow-md whitespace-nowrap transition-all origin-right">
+          預約免費體驗
+        </span>
+      </a>
+    </div>
+
+    <!-- Mobile Bottom Sticky Double Action Buttons -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-3 grid grid-cols-2 gap-3 z-50 shadow-lg">
+      <a href="https://lin.ee/vAd9MGi" target="_blank" rel="noopener noreferrer" class="py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-md">
+        <i class="fa-brands fa-line text-lg"></i>
+        <span>LINE 諮詢</span>
+      </a>
+      <a href="#register" class="py-3 bg-brand-orange text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-md shadow-orange-glow">
+        <i class="fa-solid fa-rocket animate-pulse"></i>
+        <span>立即報名</span>
+      </a>
+    </div>
+
+    <!-- ==================== 13. FOOTER 頁尾 ==================== -->
+    <footer class="bg-brand-inkBlue text-slate-300 border-t border-white/5 pt-16 pb-24 md:pb-16 px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10">
+        <!-- Brand column -->
+        <div class="md:col-span-5 flex flex-col space-y-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-blue-glow overflow-hidden">
+              <img src="ai-assets/spark-ai.svg" alt="創意走廊 AI 科技教育圖標" class="w-6 h-6" loading="lazy" />
+            </div>
+            <span class="text-xl font-black tracking-wider text-white">創意走廊 AI 科技教育</span>
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed max-w-sm font-semibold">
+            創意走廊專注於 AI 無人機、AI 機器人與生成式 AI 課程，陪伴孩子建立科技素養與未來競爭力，從動手實作中開啟通往未來的智慧大門。
+          </p>
+          <!-- Social Medias Mock -->
+          <div class="flex items-center space-x-4 pt-2">
+            <a href="#" class="w-8 h-8 rounded-full bg-brand-spaceDark hover:bg-brand-techBlue hover:text-white border border-white/10 flex items-center justify-center text-slate-300 transition-colors" aria-label="Facebook"><i class="fa-brands fa-facebook-f text-sm"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-brand-spaceDark hover:bg-brand-techBlue hover:text-white border border-white/10 flex items-center justify-center text-slate-300 transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram text-sm"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-brand-spaceDark hover:bg-brand-techBlue hover:text-white border border-white/10 flex items-center justify-center text-slate-300 transition-colors" aria-label="Youtube"><i class="fa-brands fa-youtube text-sm"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="md:col-span-2 flex flex-col space-y-4">
+          <h4 class="text-white font-bold text-sm tracking-wider">快速連結</h4>
+          <ul class="space-y-2 text-xs text-slate-300 font-bold">
+            <li><a href="#home" class="hover:text-brand-cyan transition-colors">首頁</a></li>
+            <li><a href="#courses" class="hover:text-brand-cyan transition-colors">課程介紹</a></li>
+            <li><a href="#experience" class="hover:text-brand-cyan transition-colors">體驗亮點</a></li>
+            <li><a href="#path" class="hover:text-brand-cyan transition-colors">學習路徑</a></li>
+            <li><a href="#portfolio" class="hover:text-brand-cyan transition-colors">學生作品</a></li>
+          </ul>
+        </div>
+
+        <!-- Course Categories -->
+        <div class="md:col-span-2 flex flex-col space-y-4">
+          <h4 class="text-white font-bold text-sm tracking-wider">課程類別</h4>
+          <ul class="space-y-2 text-xs text-slate-300 font-bold">
+            <li><a href="#courses" class="hover:text-brand-cyan transition-colors">AI 無人機課程</a></li>
+            <li><a href="#courses" class="hover:text-brand-cyan transition-colors">AI 機器人課程</a></li>
+            <li><a href="#courses" class="hover:text-brand-cyan transition-colors">生成式 AI 課程</a></li>
+            <li><a href="#register" class="hover:text-brand-cyan transition-colors">預約體驗課</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="md:col-span-3 flex flex-col space-y-4">
+          <h4 class="text-white font-bold text-sm tracking-wider">聯絡資訊</h4>
+          <ul class="space-y-2 text-xs text-slate-300 font-bold">
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-location-dot text-brand-cyan shrink-0"></i>
+              <span>台北市信義區科技大道88號6樓</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-phone text-brand-cyan shrink-0"></i>
+              <span>(02) 2345-6789</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-envelope text-brand-cyan shrink-0"></i>
+              <span>contact@creative-corridor.edu</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-clock text-brand-cyan shrink-0"></i>
+              <span>週一至週日 09:00 - 21:00</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Copyright Area -->
+      <div class="max-w-7xl mx-auto border-t border-white/10 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-4 font-bold">
+        <div>© 2026 創意走廊 AI 科技教育. All Rights Reserved.</div>
+        <div class="flex items-center space-x-4">
+          <a href="#" class="hover:underline">隱私權政策</a>
+          <span>•</span>
+          <a href="#" class="hover:underline">使用者服務條款</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ==================== 14. CUSTOM SUCCESS MODAL ==================== -->
+    <div id="success-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-spaceDark/80 backdrop-blur-md">
+      <div class="glass-card-light w-full max-w-md rounded-3xl p-8 border border-white shadow-2xl relative text-center">
+        <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mx-auto mb-6 shadow-md">
+          <i class="fa-solid fa-circle-check text-3xl animate-bounce"></i>
+        </div>
+        <h3 class="text-2xl font-black text-brand-inkBlue mb-3">預約諮詢送出成功！</h3>
+        <p class="text-sm text-slate-600 leading-relaxed mb-6 font-semibold">
+          感謝您完成表單，我們已收到您的課程諮詢，將儘快與您聯繫，協助安排最適合孩子的 AI 科技課程。
+        </p>
+        <button id="close-modal" class="w-full py-3.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-black rounded-xl transition-all shadow-orange-glow">
+          太棒了，我知道了！
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== JAVASCRIPT FUNCTIONS ==================== -->
+  <script>
+    window.onload = function() {
+      // 1. HTML5 Canvas Starfield Simulation (高還原 下載.jfif 繁星微閃爍效果)
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      // 當視窗大小改變時自適應調整畫布尺寸
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initStars();
+      });
+
+      let stars = [];
+      const numStars = 180; // 控制星辰密度
+
+      function initStars() {
+        stars = [];
+        for (let i = 0; i < numStars; i++) {
+          stars.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 1.5 + 0.2, // 微小星辰與高亮北極星感
+            glow: Math.random() * 2, // 初始亮度
+            twinkleSpeed: Math.random() * 0.02 + 0.005, // 閃爍速度
+            glowFactor: Math.random() > 0.9 ? 2.5 : 1 // 隨機亮星
+          });
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // 渲染繁星
+        for (let i = 0; i < numStars; i++) {
+          let star = stars[i];
+          star.glow += star.twinkleSpeed;
+          let alpha = 0.3 + Math.sin(star.glow) * 0.6; // 弦波閃爍
+          
+          ctx.beginPath();
+          // 星辰發光擴散效果
+          ctx.arc(star.x, star.y, star.size * star.glowFactor, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.shadowBlur = star.glowFactor > 1 ? 12 : 0;
+          ctx.shadowColor = '#55E6FF';
+          ctx.fill();
+        }
+        
+        requestAnimationFrame(animate);
+      }
+
+      initStars();
+      animate();
+    }
+
+    // 1. Navigation Header Scroll Effect
+    const header = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('bg-brand-spaceDark/90', 'backdrop-blur-md', 'shadow-md');
+        header.classList.remove('py-4', 'border-transparent');
+        header.classList.add('py-3', 'border-white/5');
+      } else {
+        header.classList.remove('bg-brand-spaceDark/90', 'backdrop-blur-md', 'shadow-md');
+        header.classList.add('py-4', 'border-transparent');
+        header.classList.remove('py-3', 'border-white/5');
+      }
+    });
+
+    // 2. Mobile Hamburger Menu Toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function toggleMenu() {
+      const isHidden = mobileMenu.classList.contains('hidden');
+      if (isHidden) {
+        mobileMenu.classList.remove('hidden');
+        menuIcon.className = 'fa-solid fa-xmark text-2xl';
+        document.body.classList.add('overflow-hidden');
+      } else {
+        mobileMenu.classList.add('hidden');
+        menuIcon.className = 'fa-solid fa-bars text-2xl';
+        document.body.classList.remove('overflow-hidden');
+      }
+    }
+
+    menuBtn.addEventListener('click', toggleMenu);
+    
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuIcon.className = 'fa-solid fa-bars text-2xl';
+        document.body.classList.remove('overflow-hidden');
+      });
+    });
+
+    // 3. FAQ Accordion Logic
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+
+    faqToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const item = toggle.parentElement;
+        const content = item.querySelector('.faq-content');
+        const icon = toggle.querySelector('.faq-icon i');
+
+        const isActive = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+        document.querySelectorAll('.faq-content').forEach(otherContent => {
+          otherContent.style.maxHeight = '0px';
+          const otherItem = otherContent.parentElement;
+          const otherIcon = otherItem.querySelector('.faq-icon i');
+          otherIcon.className = 'fa-solid fa-plus transition-transform duration-300';
+          otherItem.classList.remove('border-brand-techBlue');
+          otherItem.classList.add('border-slate-200');
+        });
+
+        if (!isActive) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          icon.className = 'fa-solid fa-minus transition-transform duration-300 rotate-180 text-brand-techBlue';
+          item.classList.add('border-brand-techBlue');
+          item.classList.remove('border-slate-200');
+        } else {
+          content.style.maxHeight = '0px';
+          icon.className = 'fa-solid fa-plus transition-transform duration-300';
+          item.classList.remove('border-brand-techBlue');
+          item.classList.add('border-slate-200');
+        }
+      });
+    });
+
+    // 4. Form Submission Mocking
+    const admissionForm = document.getElementById('admission-form');
+    const successModal = document.getElementById('success-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+
+    admissionForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const checkedBoxes = document.querySelectorAll('input[name="interest"]:checked');
+      if (checkedBoxes.length === 0) {
+        const errorMsgContainer = document.createElement('div');
+        errorMsgContainer.className = 'text-brand-orange text-xs font-black mt-2 text-center animate-pulse';
+        errorMsgContainer.innerText = '請至少勾選一項有興趣的課程喔！';
+        
+        const existingError = admissionForm.querySelector('.checkbox-error');
+        if (existingError) existingError.remove();
+
+        errorMsgContainer.classList.add('checkbox-error');
+        admissionForm.querySelector('.flex-col.space-y-3').appendChild(errorMsgContainer);
+        return;
+      } else {
+        const existingError = admissionForm.querySelector('.checkbox-error');
+        if (existingError) existingError.remove();
+      }
+
+      successModal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      admissionForm.reset();
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      successModal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    });
+
+    successModal.addEventListener('click', (e) => {
+      if (e.target === successModal) {
+        successModal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    });
+  </script>
+</body>
+</html>
